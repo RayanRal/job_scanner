@@ -10,9 +10,10 @@ from app.scanner import scheduler
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     init_db()
-    scheduler.start()
+    sched = scheduler.create()
+    sched.start()
     yield
-    scheduler.stop()
+    sched.shutdown(wait=False)
 
 
 def create_app() -> FastAPI:
