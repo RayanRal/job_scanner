@@ -1,4 +1,4 @@
-from typing import Any, cast
+from typing import Any
 
 from app.parsers import ashby, greenhouse, lever
 from app.parsers.types import ParsedJob
@@ -16,8 +16,8 @@ def detect(url: str) -> tuple[str, str] | None:
 
 
 def jobs_url(provider: str, board_token: str) -> str:
-    return cast(str, BY_NAME[provider].jobs_url(board_token))
+    return BY_NAME[provider].jobs_url(board_token)
 
 
 def parse(provider: str, payload: Any) -> list[ParsedJob]:
-    return cast(list[ParsedJob], BY_NAME[provider].parse(payload))
+    return BY_NAME[provider].parse(payload)
