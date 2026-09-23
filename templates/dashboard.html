@@ -1,0 +1,14 @@
+<!doctype html>
+<html><body>
+<form method="get" action="/">
+  <input name="q" placeholder="search" value="{{ q }}">
+  <input name="location" placeholder="location" value="{{ location }}">
+  <input name="tag" placeholder="tag" value="{{ tag }}">
+  <button>Filter</button>
+</form>
+<ul>
+{% for j in jobs %}
+<li><a href="{{ j.url }}">{{ j.title }}</a> — {{ j.location }} [{{ j.tags }}]</li>
+{% endfor %}
+</ul>
+</body></html>
