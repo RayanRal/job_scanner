@@ -11,5 +11,6 @@ def create_company_with_source(name: str, url: str) -> Source:
         raise HTTPException(status_code=400, detail="unsupported provider")
     provider, board_token = found
     company = companies.create(name)
-    assert company.id is not None
+    if company.id is None:
+        raise HTTPException(status_code=500, detail="company not created")
     return sources.create(company.id, url, provider, board_token)
