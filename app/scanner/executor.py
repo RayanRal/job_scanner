@@ -10,7 +10,9 @@ from app.parsers import registry
 HEADERS = {"User-Agent": "job-scanner/0.1"}
 
 
-async def scan_source(client: httpx.AsyncClient, source_id: int, provider: str, board_token: str) -> None:
+async def scan_source(
+    client: httpx.AsyncClient, source_id: int, provider: str, board_token: str
+) -> None:
     try:
         r = await client.get(registry.jobs_url(provider, board_token), headers=HEADERS, timeout=15)
         r.raise_for_status()

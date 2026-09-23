@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlmodel import select
+from sqlmodel import col, select
 
 from app.db import engine as eng
 from app.db.models import Job
@@ -39,7 +39,7 @@ def upsert_jobs(source_id: int, parsed: list[ParsedJob], tagger) -> None:
                         tags=tags,
                     )
                 )
-        for old in s.exec(select(Job).where(Job.source_id == source_id, Job.is_active == True)).all():  # noqa: E712
+        for old in s.exec(select(Job).where(Job.source_id == source_id, Job.is_active)).all():
             if old.external_id not in seen:
                 old.is_active = False
                 s.add(old)
@@ -48,11 +48,11 @@ def upsert_jobs(source_id: int, parsed: list[ParsedJob], tagger) -> None:
 
 def search(query: str = "", location: str = "", tag: str = "", limit: int = 200) -> list[Job]:
     with eng.session() as s:
-        stmt = select(Job).where(Job.is_active == True).order_by(Job.last_seen.desc()).limit(limit)  # noqa: E712
+        stmt = select(Job).where(Job.is_active).order_by(col(Job.last_seen).desc()).limit(limit)
         if query:
-            stmt = stmt.where(Job.title.ilike(f"%{query}%"))
+            stmt = stmt.where(col(Job.title).ilike(f"%{query}%"))
         if location:
-            stmt = stmt.where(Job.location.ilike(f"%{location}%"))
+            stmt = stmt.where(col(Job.location).ilike(f"%{location}%"))
         if tag:
-            stmt = stmt.where(Job.tags.ilike(f"%{tag}%"))
+            stmt = stmt.where(col(Job.tags).ilike(f"%{tag}%"))
         return list(s.exec(stmt).all())

@@ -18,6 +18,12 @@ def api_jobs(q: str = "", location: str = "", tag: str = ""):
 @router.get("/", response_class=HTMLResponse)
 def dashboard(request: Request, q: str = "", location: str = "", tag: str = ""):
     return templates.TemplateResponse(
+        request,
         "dashboard.html",
-        {"request": request, "jobs": job_repo.search(q, location, tag), "q": q, "location": location, "tag": tag},
+        {
+            "jobs": job_repo.search(q, location, tag),
+            "q": q,
+            "location": location,
+            "tag": tag,
+        },
     )

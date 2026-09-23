@@ -4,7 +4,8 @@ from pydantic import BaseModel
 from app.core.security import require_admin
 from app.db.repos import companies, sources
 from app.db.repos.sources import reschedule
-from app.services import scans, sources as svc
+from app.services import scans
+from app.services import sources as svc
 
 router = APIRouter(prefix="/admin", dependencies=[Depends(require_admin)])
 

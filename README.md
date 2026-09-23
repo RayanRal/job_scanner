@@ -5,17 +5,20 @@ Layers: `parsers` (pure) -> `db` -> `services`/`scanner` -> `api`. No cross-impo
 ## Local
 
 ```sh
-cp .env.example .env
+uv sync
+cp -n .env.example .env
+docker compose up db   # postgres on :5432
+make run               # http://localhost:8000/
+```
+
+Or everything in Docker:
+
+```sh
 docker compose up --build
 # app: http://localhost:8000/  admin: X-Admin-Token header
 ```
 
-DB only (run API from venv):
-
-```sh
-docker compose up db
-DATABASE_URL=postgresql+psycopg://jobs:jobs@localhost:5432/jobs uvicorn app.main:app --reload
-```
+Checks: `make lint`, `make typecheck`.
 
 ## Oracle Always-Free
 
