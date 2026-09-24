@@ -1,0 +1,13 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: ${DATABASE_URL:?DATABASE_URL must be set in .env}
+      ADMIN_TOKEN: ${ADMIN_TOKEN:-change-me}
+      SCAN_INTERVAL_SECONDS: ${SCAN_INTERVAL_SECONDS:-3600}
+      SCAN_ENABLED: ${SCAN_ENABLED:-true}
+      SCAN_BATCH_SIZE: ${SCAN_BATCH_SIZE:-50}
+      SCAN_CONCURRENCY: ${SCAN_CONCURRENCY:-10}
+    ports:
+      - "8000:8000"
