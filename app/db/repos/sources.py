@@ -34,6 +34,10 @@ def claim_due(limit: int) -> list[Source]:
         for r in rows:
             r.status = "queued"
             s.add(r)
+        s.flush()
+        for r in rows:
+            s.refresh(r)
+            s.expunge(r)
             claimed.append(r)
         s.commit()
         return claimed
