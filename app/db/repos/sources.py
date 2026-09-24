@@ -76,8 +76,7 @@ def reschedule(source_id: int) -> None:
         if src is None:
             return
         src.next_scan_at = utcnow()
-        if src.status == "broken":
-            src.status = "active"
-            src.fail_count = 0
+        src.status = "active"
+        src.fail_count = 0
         s.add(src)
         s.commit()
