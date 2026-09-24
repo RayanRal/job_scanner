@@ -1,0 +1,28 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "**.md"
+      - renovate.json
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-prod
+      cancel-in-progress: false
+    steps:
+      - name: Deploy over SSH
+        env:
+          ORACLE_SSH_KEY: ${{ secrets.ORACLE_SSH_KEY }}
+          ORACLE_HOST: 132.145.66.84
+        run: |
+          mkdir -p ~/.ssh
+          umask 077
+          printf '%s\n' "$ORACLE_SSH_KEY" > ~/.ssh/deploy_key
+          ssh-keyscan -H "$ORACLE_HOST" >> ~/.ssh/known_hosts
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=yes "opc@$ORACLE_HOST" \
+            'cd /srv/job-scanner && git pull --ff-only && sudo docker compose -f docker-compose.prod.yml up -d --build'
