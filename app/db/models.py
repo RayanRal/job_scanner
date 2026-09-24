@@ -1,12 +1,16 @@
-from datetime import datetime
+from datetime import UTC, datetime
 
 from sqlmodel import Field, SQLModel
+
+
+def utcnow() -> datetime:
+    return datetime.now(UTC)
 
 
 class Company(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(index=True)
-    created_at: datetime = Field(default_factory=datetime.utcnow)
+    created_at: datetime = Field(default_factory=utcnow)
 
 
 class Source(SQLModel, table=True):
@@ -32,5 +36,5 @@ class Job(SQLModel, table=True):
     description: str = ""
     tags: str = Field(default="", index=True)
     is_active: bool = Field(default=True, index=True)
-    first_seen: datetime = Field(default_factory=datetime.utcnow)
-    last_seen: datetime = Field(default_factory=datetime.utcnow)
+    first_seen: datetime = Field(default_factory=utcnow)
+    last_seen: datetime = Field(default_factory=utcnow)

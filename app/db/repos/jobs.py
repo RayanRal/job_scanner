@@ -1,9 +1,7 @@
-from datetime import datetime
-
 from sqlmodel import col, select
 
 from app.db import engine as eng
-from app.db.models import Job
+from app.db.models import Job, utcnow
 from app.parsers.types import ParsedJob
 
 
@@ -24,7 +22,7 @@ def upsert_jobs(source_id: int, parsed: list[ParsedJob], tagger) -> None:
                 existing.description = p.description
                 existing.tags = tags
                 existing.is_active = True
-                existing.last_seen = datetime.utcnow()
+                existing.last_seen = utcnow()
                 s.add(existing)
             else:
                 s.add(
