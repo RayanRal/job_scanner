@@ -20,7 +20,7 @@ class Source(SQLModel, table=True):
     provider: str = Field(index=True)
     board_token: str
     status: str = Field(default="active", index=True)
-    next_scan_at: datetime = Field(default_factory=datetime.utcnow, index=True)
+    next_scan_at: datetime = Field(default_factory=utcnow, index=True)
     fail_count: int = 0
     last_error: str = ""
 
