@@ -33,6 +33,7 @@ def claim_due(limit: int) -> list[Source]:
         claimed = []
         for r in rows:
             r.status = "queued"
+            r.next_scan_at = utcnow() + timedelta(seconds=config.SCAN_INTERVAL_SECONDS)
             s.add(r)
         s.flush()
         for r in rows:
