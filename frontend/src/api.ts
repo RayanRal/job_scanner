@@ -24,14 +24,20 @@ export interface Source {
   last_error: string;
 }
 
-const token = () => localStorage.getItem("adminToken") ?? "";
+const adminToken = () => localStorage.getItem("adminToken") ?? "";
+
+export const sessionToken = {
+  get: () => localStorage.getItem("sessionToken"),
+  set: (t: string) => localStorage.setItem("sessionToken", t),
+  clear: () => localStorage.removeItem("sessionToken"),
+};
 
 async function req<T>(path: string, init?: RequestInit): Promise<T> {
   const r = await fetch(path, {
     ...init,
     headers: {
       "Content-Type": "application/json",
-      "X-Admin-Token": token(),
+      "X-Admin-Token": adminToken(),
       ...(init?.headers ?? {}),
     },
   });
@@ -39,9 +45,38 @@ async function req<T>(path: string, init?: RequestInit): Promise<T> {
   return r.json();
 }
 
+async function authed<T>(path: string, init?: RequestInit): Promise<T> {
+  const r = await fetch(path, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${sessionToken.get() ?? ""}`,
+      ...(init?.headers ?? {}),
+    },
+  });
+  if (r.status === 401) {
+    sessionToken.clear();
+    throw new Error("not authenticated");
+  }
+  if (!r.ok) throw new Error(`HTTP ${r.status}`);
+  return r.json();
+}
+
 export const api = {
   jobs: (params: URLSearchParams): Promise<Job[]> =>
-    fetch(`/api/jobs?${params}`).then((r) => r.json()),
+    authed(`/api/jobs?${params}`),
+  register: (email: string, password: string): Promise<{ token: string }> =>
+    req("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }),
+  login: (email: string, password: string): Promise<{ token: string }> =>
+    req("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }),
+  logout: (): Promise<{ ok: boolean }> =>
+    authed("/api/auth/logout", { method: "POST" }),
   companies: (): Promise<Company[]> => req("/api/admin/companies"),
   addCompany: (name: string, url: string): Promise<Source> =>
     req("/api/admin/companies", {

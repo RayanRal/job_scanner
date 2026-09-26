@@ -38,3 +38,18 @@ class Job(SQLModel, table=True):
     is_active: bool = Field(default=True, index=True)
     first_seen: datetime = Field(default_factory=utcnow)
     last_seen: datetime = Field(default_factory=utcnow)
+
+
+class User(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    email: str = Field(unique=True, index=True)
+    password_hash: str
+    created_at: datetime = Field(default_factory=utcnow)
+
+
+class Session(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    token_hash: str = Field(unique=True, index=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    expires_at: datetime
+    created_at: datetime = Field(default_factory=utcnow)

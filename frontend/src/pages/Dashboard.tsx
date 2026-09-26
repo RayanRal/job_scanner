@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { api, type Job } from "../api";
 
 export default function Dashboard() {
@@ -6,11 +7,16 @@ export default function Dashboard() {
   const [location, setLocation] = useState("");
   const [tag, setTag] = useState("");
   const [jobs, setJobs] = useState<Job[]>([]);
+  const navigate = useNavigate();
 
   const search = async (e?: React.FormEvent) => {
     e?.preventDefault();
     const params = new URLSearchParams({ q, location, tag });
-    setJobs(await api.jobs(params));
+    try {
+      setJobs(await api.jobs(params));
+    } catch {
+      navigate("/login");
+    }
   };
 
   return (
