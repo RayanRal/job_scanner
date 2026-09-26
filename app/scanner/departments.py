@@ -6,6 +6,7 @@ EXCLUDED_DEPARTMENTS = (
     r"financ|accounting",
     r"sales",
     r"human resources|\bhr\b|\bpeople\b",
+    r"recruiting|\btalent\b",
     r"communications|\bcomms\b|public relations",
 )
 
