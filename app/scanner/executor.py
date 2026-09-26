@@ -6,6 +6,7 @@ from app.core import config, tagger
 from app.db.repos import jobs as job_repo
 from app.db.repos import sources as source_repo
 from app.parsers import registry
+from app.scanner import departments
 
 HEADERS = {"User-Agent": "job-scanner/0.1"}
 
@@ -17,7 +18,8 @@ async def scan_source(
         r = await client.get(registry.jobs_url(provider, board_token), headers=HEADERS, timeout=15)
         r.raise_for_status()
         parsed = registry.parse(provider, r.json())
-        job_repo.upsert_jobs(source_id, parsed, tagger.extract_tags)
+        wanted = [p for p in parsed if not departments.is_excluded(p.department)]
+        job_repo.upsert_jobs(source_id, wanted, tagger.extract_tags)
         source_repo.mark_success(source_id)
     except Exception as e:
         source_repo.mark_failed(source_id, str(e))
