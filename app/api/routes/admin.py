@@ -7,7 +7,7 @@ from app.db.repos.sources import reschedule
 from app.services import scans
 from app.services import sources as svc
 
-router = APIRouter(prefix="/admin", dependencies=[Depends(require_admin)])
+router = APIRouter(prefix="/api/admin", dependencies=[Depends(require_admin)])
 
 
 class AddCompany(BaseModel):
