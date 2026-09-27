@@ -1,6 +1,6 @@
 from datetime import UTC, datetime
 
-from sqlmodel import Field, SQLModel
+from sqlmodel import Field, SQLModel, UniqueConstraint
 
 
 def utcnow() -> datetime:
@@ -52,4 +52,14 @@ class Session(SQLModel, table=True):
     token_hash: str = Field(unique=True, index=True)
     user_id: int = Field(foreign_key="user.id", index=True)
     expires_at: datetime
+    created_at: datetime = Field(default_factory=utcnow)
+
+
+class UserJobMark(SQLModel, table=True):
+    __table_args__ = (UniqueConstraint("user_id", "job_id"),)
+
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = Field(foreign_key="user.id", index=True)
+    job_id: int = Field(foreign_key="job.id", index=True)
+    status: str = Field(default="interested", index=True)
     created_at: datetime = Field(default_factory=utcnow)

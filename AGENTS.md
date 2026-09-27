@@ -16,7 +16,7 @@ app/
   scanner/             # Polling orchestration
   services/            # use-cases called by the API
   api/                 # FastAPI routes
-templates/             # server-rendered dashboard (Jinja + HTMX)
+frontend/              # Vite + React 19 + TS strict + react-router
 ```
 
 Dependency direction, strictly one-way:

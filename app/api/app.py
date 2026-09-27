@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from app.api.routes import admin, auth, dashboard
+from app.api.routes import admin, auth, dashboard, marks
 from app.db.engine import init_db
 from app.scanner import scheduler
 
@@ -26,6 +26,7 @@ def create_app() -> FastAPI:
     app.include_router(dashboard.router)
     app.include_router(admin.router)
     app.include_router(auth.router)
+    app.include_router(marks.router)
     app.mount("/assets", StaticFiles(directory=STATIC_DIR / "assets"), name="assets")
 
     @app.get("/", include_in_schema=False)
