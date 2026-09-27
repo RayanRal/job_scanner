@@ -9,6 +9,10 @@ router = APIRouter()
 
 @router.get("/api/jobs")
 def api_jobs(
-    user: User = Depends(auth.get_current_user), q: str = "", location: str = "", tag: str = ""
+    user: User = Depends(auth.get_current_user),
+    q: str = "",
+    location: str = "",
+    tag: str = "",
+    limit: int = 200,
 ):
-    return job_repo.search(q, location, tag)
+    return job_repo.search(q, location, tag, min(limit, 5000))

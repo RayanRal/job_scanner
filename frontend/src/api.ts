@@ -5,6 +5,14 @@ export interface Job {
   department: string;
   url: string;
   tags: string;
+  is_active: boolean;
+}
+
+export type MarkStatus = "interested" | "applied";
+
+export interface Chip {
+  field: "location" | "stack" | "company" | "title";
+  value: string;
 }
 
 export interface Company {
@@ -65,6 +73,15 @@ async function authed<T>(path: string, init?: RequestInit): Promise<T> {
 export const api = {
   jobs: (params: URLSearchParams): Promise<Job[]> =>
     authed(`/api/jobs?${params}`),
+  marks: (status?: MarkStatus): Promise<Job[]> =>
+    authed(status ? `/api/marks?status=${status}` : "/api/marks"),
+  setMark: (jobId: number, status: MarkStatus): Promise<unknown> =>
+    authed("/api/marks", {
+      method: "PUT",
+      body: JSON.stringify({ job_id: jobId, status }),
+    }),
+  removeMark: (jobId: number): Promise<unknown> =>
+    authed(`/api/marks/${jobId}`, { method: "DELETE" }),
   register: (email: string, password: string): Promise<{ token: string }> =>
     req("/api/auth/register", {
       method: "POST",
