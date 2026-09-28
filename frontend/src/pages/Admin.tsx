@@ -3,15 +3,24 @@ import { api, type Company, type Source } from "../api";
 
 export default function Admin() {
   const [token, setToken] = useState(localStorage.getItem("adminToken") ?? "");
+  const [unlocked, setUnlocked] = useState(false);
   const [companies, setCompanies] = useState<Company[]>([]);
   const [sources, setSources] = useState<Source[]>([]);
   const [name, setName] = useState("");
   const [url, setUrl] = useState("");
   const [msg, setMsg] = useState("");
 
-  const saveToken = () => {
+  const saveToken = async () => {
     localStorage.setItem("adminToken", token);
-    refresh();
+    try {
+      setMsg("");
+      setCompanies(await api.companies());
+      setSources(await api.sources());
+      setUnlocked(true);
+    } catch (e) {
+      setUnlocked(false);
+      setMsg(e instanceof Error ? e.message : "request failed");
+    }
   };
 
   const refresh = async () => {
@@ -70,11 +79,14 @@ export default function Admin() {
           className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm"
           onClick={saveToken}
         >
-          Use token
+          Unlock
         </button>
       </div>
       {msg && <p className="mb-3 text-sm text-red-700">{msg}</p>}
-      <h2 className="mb-2 text-base font-bold">Add company</h2>
+      {!unlocked && !msg && <p className="text-sm text-gray-500">Enter the admin token to continue.</p>}
+      {unlocked && (
+        <>
+          <h2 className="mb-2 text-base font-bold">Add company</h2>
       <form onSubmit={add} className="mb-4 flex gap-2">
         <input
           className="w-48 rounded-md border border-gray-300 px-2.5 py-1.5 text-sm"
@@ -146,6 +158,8 @@ export default function Admin() {
           ))}
         </tbody>
       </table>
+        </>
+      )}
     </div>
   );
 }

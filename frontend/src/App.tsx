@@ -30,9 +30,6 @@ function Nav() {
       <Link to="/" className="text-gray-300 hover:text-white">
         Jobs
       </Link>
-      <Link to="/admin" className="text-gray-300 hover:text-white">
-        Admin
-      </Link>
       <span className="flex-1" />
       <button onClick={logout} className="text-gray-300 hover:text-white">
         Log out
