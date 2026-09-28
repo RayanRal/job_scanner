@@ -23,9 +23,20 @@ function Nav() {
     }
   };
   return (
-    <nav>
-      <Link to="/">Jobs</Link> | <Link to="/admin">Admin</Link> |{" "}
-      <button onClick={logout}>Log out</button>
+    <nav className="flex items-center gap-3 bg-gray-900 px-4 py-2.5 text-sm text-white">
+      <Link to="/" className="font-bold">
+        jobscan
+      </Link>
+      <Link to="/" className="text-gray-300 hover:text-white">
+        Jobs
+      </Link>
+      <Link to="/admin" className="text-gray-300 hover:text-white">
+        Admin
+      </Link>
+      <span className="flex-1" />
+      <button onClick={logout} className="text-gray-300 hover:text-white">
+        Log out
+      </button>
     </nav>
   );
 }

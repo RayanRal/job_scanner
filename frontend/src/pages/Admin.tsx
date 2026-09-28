@@ -56,67 +56,91 @@ export default function Admin() {
   };
 
   return (
-    <div>
-      <h1>Admin</h1>
-      <div>
+    <div className="mx-auto max-w-5xl p-4">
+      <h1 className="mb-3 text-xl font-bold">Admin</h1>
+      <div className="mb-3 flex gap-2">
         <input
+          className="w-72 rounded-md border border-gray-300 px-2.5 py-1.5 text-sm"
           type="password"
           placeholder="admin token"
           value={token}
           onChange={(e) => setToken(e.target.value)}
         />
-        <button onClick={saveToken}>Use token</button>
+        <button
+          className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm"
+          onClick={saveToken}
+        >
+          Use token
+        </button>
       </div>
-      {msg && <p>{msg}</p>}
-      <h2>Add company</h2>
-      <form onSubmit={add}>
+      {msg && <p className="mb-3 text-sm text-red-700">{msg}</p>}
+      <h2 className="mb-2 text-base font-bold">Add company</h2>
+      <form onSubmit={add} className="mb-4 flex gap-2">
         <input
+          className="w-48 rounded-md border border-gray-300 px-2.5 py-1.5 text-sm"
           placeholder="name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
         <input
+          className="w-96 rounded-md border border-gray-300 px-2.5 py-1.5 text-sm"
           placeholder="careers page url"
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
-        <button>Add</button>
+        <button className="rounded-md bg-gray-900 px-3 py-1.5 text-sm text-white">Add</button>
       </form>
-      <h2>
-        Companies <button onClick={refresh}>Refresh</button>{" "}
-        <button onClick={scanAll}>Scan now</button>
+      <h2 className="mb-2 text-base font-bold">
+        Companies{" "}
+        <button
+          className="ml-2 rounded-md border border-gray-300 bg-white px-2 py-1 text-xs"
+          onClick={refresh}
+        >
+          Refresh
+        </button>{" "}
+        <button
+          className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs"
+          onClick={scanAll}
+        >
+          Scan now
+        </button>
       </h2>
-      <ul>
+      <ul className="mb-4 list-disc pl-6 text-sm">
         {companies.map((c) => (
           <li key={c.id}>{c.name}</li>
         ))}
       </ul>
-      <h2>Sources</h2>
-      <table>
+      <h2 className="mb-2 text-base font-bold">Sources</h2>
+      <table className="w-full bg-white text-sm">
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Provider</th>
-            <th>Status</th>
-            <th>Fails</th>
-            <th>Next scan</th>
-            <th>Error</th>
-            <th></th>
+          <tr className="text-left text-gray-500">
+            <th className="px-3 py-2">ID</th>
+            <th className="px-3 py-2">Provider</th>
+            <th className="px-3 py-2">Status</th>
+            <th className="px-3 py-2">Fails</th>
+            <th className="px-3 py-2">Next scan</th>
+            <th className="px-3 py-2">Error</th>
+            <th className="px-3 py-2"></th>
           </tr>
         </thead>
         <tbody>
           {sources.map((s) => (
-            <tr key={s.id}>
-              <td>{s.id}</td>
-              <td>
+            <tr key={s.id} className="border-t border-gray-100">
+              <td className="px-3 py-2">{s.id}</td>
+              <td className="px-3 py-2">
                 {s.provider} ({s.board_token})
               </td>
-              <td>{s.status}</td>
-              <td>{s.fail_count}</td>
-              <td>{s.next_scan_at}</td>
-              <td>{s.last_error}</td>
-              <td>
-                <button onClick={() => rescan(s.id)}>Rescan</button>
+              <td className="px-3 py-2">{s.status}</td>
+              <td className="px-3 py-2">{s.fail_count}</td>
+              <td className="px-3 py-2">{s.next_scan_at}</td>
+              <td className="max-w-xs truncate px-3 py-2 text-red-700">{s.last_error}</td>
+              <td className="px-3 py-2">
+                <button
+                  className="rounded-md border border-gray-300 bg-white px-2 py-1 text-xs"
+                  onClick={() => rescan(s.id)}
+                >
+                  Rescan
+                </button>
               </td>
             </tr>
           ))}
