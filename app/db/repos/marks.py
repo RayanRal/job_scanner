@@ -16,6 +16,8 @@ def set_mark(user_id: int, job_id: int, status: str) -> UserJobMark | None:
             .returning(UserJobMark)
         ).first()
         s.commit()
+        if mark is not None:
+            s.refresh(mark)
         return mark
 
 
