@@ -1,3 +1,4 @@
+from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlmodel import col, select
 
 from app.db import engine as eng
@@ -9,15 +10,12 @@ def set_mark(user_id: int, job_id: int, status: str) -> UserJobMark | None:
         if s.get(Job, job_id) is None:
             return None
         mark = s.exec(
-            select(UserJobMark).where(UserJobMark.user_id == user_id, UserJobMark.job_id == job_id)
+            pg_insert(UserJobMark)
+            .values(user_id=user_id, job_id=job_id, status=status)
+            .on_conflict_do_update(index_elements=["user_id", "job_id"], set_={"status": status})
+            .returning(UserJobMark)
         ).first()
-        if mark:
-            mark.status = status
-        else:
-            mark = UserJobMark(user_id=user_id, job_id=job_id, status=status)
-        s.add(mark)
         s.commit()
-        s.refresh(mark)
         return mark
 
 
