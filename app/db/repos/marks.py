@@ -9,7 +9,7 @@ def set_mark(user_id: int, job_id: int, status: str) -> UserJobMark | None:
     with eng.session() as s:
         if s.get(Job, job_id) is None:
             return None
-        mark = s.exec(
+        mark = s.scalars(
             pg_insert(UserJobMark)
             .values(user_id=user_id, job_id=job_id, status=status)
             .on_conflict_do_update(index_elements=["user_id", "job_id"], set_={"status": status})
